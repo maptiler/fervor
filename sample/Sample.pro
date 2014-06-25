@@ -15,13 +15,13 @@ win32:RC_FILE = sample.rc
 # Fervor autoupdater
 # (set TARGET and VERSION of your app before including Fervor.pri)
 !include("../Fervor.pri") {
-	error("Unable to include Fervor autoupdater.")
+    error("Unable to include Fervor autoupdater.")
 }
 
 
 # The sample application
 SOURCES += main.cpp \
-		mainwindow.cpp
+        mainwindow.cpp
 
 HEADERS += mainwindow.h
 

@@ -10,20 +10,20 @@ class FvUpdateWindow;
 
 class FvUpdateWindow : public QWidget
 {
-	Q_OBJECT
-	
+    Q_OBJECT
+
 public:
-	explicit FvUpdateWindow(QWidget *parent = 0);
-	~FvUpdateWindow();
+    explicit FvUpdateWindow(QWidget *parent = 0);
+    ~FvUpdateWindow();
 
-	// Update the current update proposal from FvUpdater
-	bool UpdateWindowWithCurrentProposedUpdate();
+    // Update the current update proposal from FvUpdater
+    bool UpdateWindowWithCurrentProposedUpdate();
 
-	void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event);
 
 private:
-	Ui::FvUpdateWindow*	m_ui;
-	QGraphicsScene* m_appIconScene;
+    Ui::FvUpdateWindow*    m_ui;
+    QGraphicsScene* m_appIconScene;
 
 };
 

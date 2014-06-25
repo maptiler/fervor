@@ -5,15 +5,15 @@
 
 class FVIgnoredVersions : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	static bool VersionIsIgnored(QString version);
-	static void IgnoreVersion(QString version);
-	
+    static bool VersionIsIgnored(QString version);
+    static void IgnoreVersion(QString version);
+
 private:
-	explicit FVIgnoredVersions(QObject *parent = 0);
-	
+    explicit FVIgnoredVersions(QObject *parent = 0);
+
 };
 
 #endif // FVIGNOREDVERSIONS_H
