@@ -17,6 +17,10 @@ public:
     void SetReleaseNotesLink(QUrl releaseNotesLink);
     void SetReleaseNotesLink(QString releaseNotesLink);
 
+    bool ContainsReleaseNotesHtml();
+    QString GetReleaseNotesHtml();
+    void SetReleaseNotesHtml(QString releaseNotesHtml);
+
     QString GetPubDate();
     void SetPubDate(QString pubDate);
 
@@ -39,13 +43,13 @@ public:
 private:
     QString m_title;
     QUrl m_releaseNotesLink;
+    QString m_releaseNotesHtml;
     QString m_pubDate;
     QUrl m_enclosureUrl;
     QString m_enclosureVersion;
     QString m_enclosurePlatform;
     unsigned long m_enclosureLength;
     QString m_enclosureType;
-
 };
 
 #endif // FVAVAILABLEUPDATE_H

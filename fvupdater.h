@@ -140,15 +140,15 @@ private slots:
 
 
 private:
-
     //
     // XML parser
     //
-    QXmlStreamReader m_xml;                // XML data collector and parser
+    QXmlStreamReader m_xml;             // XML data collector and parser
     bool xmlParseFeed();                // Parse feed in m_xml
     bool searchDownloadedFeedForUpdates(QString xmlTitle,
                                         QString xmlLink,
                                         QString xmlReleaseNotesLink,
+                                        QString xmlReleaseNotesHtml,
                                         QString xmlPubDate,
                                         QString xmlEnclosureUrl,
                                         QString xmlEnclosureVersion,
@@ -160,7 +160,7 @@ private:
     //
     // Helpers
     //
-    void installTranslator();            // Initialize translation mechanism
+    void installTranslator();           // Initialize translation mechanism
 
 };
 
