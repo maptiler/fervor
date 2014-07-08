@@ -44,6 +44,10 @@ public slots:
     bool CheckForUpdatesSilent();
     bool CheckForUpdatesNotSilent();
 
+signals:
+  // This signal will inform, whether network is accessible or not
+  void updatesDownloaded(bool success);
+
 
     //
     // ---------------------------------------------------
@@ -121,11 +125,11 @@ private:
     int m_httpGetId;
     bool m_httpRequestAborted;
 
-	check_before_update_callback check_callback;
-	void* check_context;
+    check_before_update_callback check_callback;
+    void* check_context;
 
-	void startDownloadFeed(QUrl url);	// Start downloading feed
-	void cancelDownloadFeed();			// Stop downloading the current feed
+    void startDownloadFeed(QUrl url);   // Start downloading feed
+    void cancelDownloadFeed();          // Stop downloading the current feed
 
 private slots:
 

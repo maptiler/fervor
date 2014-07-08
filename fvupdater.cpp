@@ -59,11 +59,11 @@ FvUpdater::FvUpdater() : QObject(0)
     m_updateConfirmationDialog = 0;
     m_proposedUpdate = 0;
 
-	check_callback = 0;
-	check_context = 0;
+    check_callback = 0;
+    check_context = 0;
 
-	// Translation mechanism
-	installTranslator();
+    // Translation mechanism
+    installTranslator();
 
 #ifdef FV_DEBUG
     // Unit tests
@@ -184,8 +184,8 @@ QString FvUpdater::GetDynamicUrlContent()
 
 void FvUpdater::SetCheckBeforeUpdate(check_before_update_callback callback, void* context)
 {
-	check_callback = callback;
-	check_context = context;
+    check_callback = callback;
+    check_context = context;
 }
 
 FvAvailableUpdate* FvUpdater::GetProposedUpdate()
@@ -198,16 +198,16 @@ void FvUpdater::InstallUpdate()
 {
     qDebug() << "Install update";
 
-	// Check callback function
-	if (check_callback) {
-		if (!check_callback(check_context, (void*)m_updaterWindow)) {
-			hideUpdaterWindow();
-			hideUpdateConfirmationDialog();	// if any; shouldn't be shown at this point, but who knows
-			return;
-		}
-	}
+    // Check callback function
+    if (check_callback) {
+        if (!check_callback(check_context, (void*)m_updaterWindow)) {
+            hideUpdaterWindow();
+            hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
+            return;
+        }
+    }
 
-	showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
+    showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
 }
 
 void FvUpdater::SkipUpdate()
@@ -368,8 +368,11 @@ void FvUpdater::httpFeedDownloadFinished()
     QVariant redirectionTarget = m_reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
     if (m_reply->error()) {
 
+        qDebug() << " error value " << m_reply->error();
         // Error.
-        showErrorDialog(tr("Feed download failed: %1.").arg(m_reply->errorString()), false);
+//    showErrorDialog(tr("Feed download failed: %1.").arg(m_reply->errorString()), false);
+        showErrorDialog(tr("Updates are unable to detect: %1.").arg(m_reply->errorString()), CRITICAL_MESSAGE);
+        emit updatesDownloaded(false);
 
     } else if (! redirectionTarget.isNull()) {
         QUrl newUrl = m_feedURL.resolved(redirectionTarget.toUrl());
@@ -381,9 +384,9 @@ void FvUpdater::httpFeedDownloadFinished()
         return;
 
     } else {
-
         // Done.
         xmlParseFeed();
+        emit updatesDownloaded(true);
 
     }
 
