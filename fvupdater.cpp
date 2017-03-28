@@ -59,8 +59,11 @@ FvUpdater::FvUpdater() : QObject(0)
     m_updateConfirmationDialog = 0;
     m_proposedUpdate = 0;
 
-    // Translation mechanism
-    installTranslator();
+	check_callback = 0;
+	check_context = 0;
+
+	// Translation mechanism
+	installTranslator();
 
 #ifdef FV_DEBUG
     // Unit tests
@@ -179,6 +182,12 @@ QString FvUpdater::GetDynamicUrlContent()
   return m_dynamicUrl;
 }
 
+void FvUpdater::SetCheckBeforeUpdate(check_before_update_callback callback, void* context)
+{
+	check_callback = callback;
+	check_context = context;
+}
+
 FvAvailableUpdate* FvUpdater::GetProposedUpdate()
 {
     return m_proposedUpdate;
@@ -189,7 +198,16 @@ void FvUpdater::InstallUpdate()
 {
     qDebug() << "Install update";
 
-    showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
+	// Check callback function
+	if (check_callback) {
+		if (!check_callback(check_context, (void*)m_updaterWindow)) {
+			hideUpdaterWindow();
+			hideUpdateConfirmationDialog();	// if any; shouldn't be shown at this point, but who knows
+			return;
+		}
+	}
+
+	showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
 }
 
 void FvUpdater::SkipUpdate()
