@@ -632,6 +632,7 @@ void FvUpdater::showErrorDialog(QString message, bool showEvenInSilentMode)
         dlFailedMsgBox.setText(tr("Error"));
         dlFailedMsgBox.setInformativeText(message);
         dlFailedMsgBox.exec();
+    }
 }
 
 void FvUpdater::showInformationDialog(QString message, bool showEvenInSilentMode)
