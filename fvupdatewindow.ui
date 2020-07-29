@@ -118,7 +118,7 @@
   <customwidget>
    <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QWebEngineView</header>
+   <header>QtWebEngine/QWebEngineView</header>
   </customwidget>
  </customwidgets>
  <resources/>
