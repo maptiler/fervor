@@ -45,8 +45,8 @@ public slots:
     bool CheckForUpdatesNotSilent();
 
 signals:
-  // This signal will inform, whether network is accessible or not
-  void updatesDownloaded(bool success);
+    // This signal will inform, whether network is accessible or not
+    void updatesDownloaded(bool success);
 
 
     //
@@ -58,8 +58,14 @@ signals:
 
 protected:
 
+    enum msgType {
+        INFO_MESSAGE,         // shown always for users
+        NO_UPDATE_MESSAGE,    // shown message only in not-silent mode, but modified
+        CRITICAL_MESSAGE      // shown always
+    };
+
     friend class FvUpdateWindow;        // Uses GetProposedUpdate() and others
-    friend class FvUpdateConfirmDialog;    // Uses GetProposedUpdate() and others
+    friend class FvUpdateConfirmDialog; // Uses GetProposedUpdate() and others
     FvAvailableUpdate* GetProposedUpdate();
 
 
@@ -82,25 +88,25 @@ private:
     // (we leave just the declarations, so the compiler will warn us if we try
     //  to use those two functions by accident)
     FvUpdater();                            // Hide main constructor
-    ~FvUpdater();                            // Hide main destructor
+    ~FvUpdater();                           // Hide main destructor
     FvUpdater(const FvUpdater&);            // Hide copy constructor
-    FvUpdater& operator=(const FvUpdater&);    // Hide assign op
+    FvUpdater& operator=(const FvUpdater&); // Hide assign op
 
-    static FvUpdater* m_Instance;            // Singleton instance
+    static FvUpdater* m_Instance;           // Singleton instance
 
 
     //
     // Windows / dialogs
     //
     FvUpdateWindow* m_updaterWindow;                                // Updater window (NULL if not shown)
-    void showUpdaterWindowUpdatedWithCurrentUpdateProposal();        // Show updater window
-    void hideUpdaterWindow();                                        // Hide + destroy m_updaterWindow
-    void updaterWindowWasClosed();                                    // Sent by the updater window when it gets closed
+    void showUpdaterWindowUpdatedWithCurrentUpdateProposal();       // Show updater window
+    void hideUpdaterWindow();                                       // Hide + destroy m_updaterWindow
+    void updaterWindowWasClosed();                                  // Sent by the updater window when it gets closed
 
-    FvUpdateConfirmDialog* m_updateConfirmationDialog;                        // Update confirmation dialog (NULL if not shown)
+    FvUpdateConfirmDialog* m_updateConfirmationDialog;                      // Update confirmation dialog (NULL if not shown)
     void showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();    // Show update confirmation dialog
     void hideUpdateConfirmationDialog();                                    // Hide + destroy m_updateConfirmationDialog
-    void updateConfirmationDialogWasClosed();                                // Sent by the update confirmation dialog when it gets closed
+    void updateConfirmationDialogWasClosed();                               // Sent by the update confirmation dialog when it gets closed
 
     // Available update (NULL if not fetched)
     FvAvailableUpdate* m_proposedUpdate;
@@ -111,14 +117,14 @@ private:
     bool m_silentAsMuchAsItCouldGet;
 
     // Dialogs (notifications)
-    void showErrorDialog(QString message, bool showEvenInSilentMode = false);            // Show an error message
-    void showInformationDialog(QString message, bool showEvenInSilentMode = false);        // Show an informational message
+    void showErrorDialog(QString message, bool showEvenInSilentMode = false);           // Show an error message
+    void showInformationDialog(QString message, bool showEvenInSilentMode = false);     // Show an informational message
 
 
     //
     // HTTP feed fetcher infrastructure
     //
-    QUrl m_feedURL;                    // Feed URL that will be fetched
+    QUrl m_feedURL;                 // Feed URL that will be fetched
     QString m_dynamicUrl;      // Dynamic download URL content
     QNetworkAccessManager m_qnam;
     QNetworkReply* m_reply;
@@ -140,6 +146,7 @@ private slots:
 
 
 private:
+
     //
     // XML parser
     //
@@ -148,7 +155,6 @@ private:
     bool searchDownloadedFeedForUpdates(QString xmlTitle,
                                         QString xmlLink,
                                         QString xmlReleaseNotesLink,
-                                        QString xmlReleaseNotesHtml,
                                         QString xmlPubDate,
                                         QString xmlEnclosureUrl,
                                         QString xmlEnclosureVersion,
