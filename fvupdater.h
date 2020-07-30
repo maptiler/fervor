@@ -117,7 +117,7 @@ private:
     bool m_silentAsMuchAsItCouldGet;
 
     // Dialogs (notifications)
-    void showErrorDialog(QString message, bool showEvenInSilentMode = false);           // Show an error message
+    void showErrorDialog(QString message, msgType type = NO_UPDATE_MESSAGE);            // Show an error message
     void showInformationDialog(QString message, bool showEvenInSilentMode = false);     // Show an informational message
 
 
@@ -155,6 +155,7 @@ private:
     bool searchDownloadedFeedForUpdates(QString xmlTitle,
                                         QString xmlLink,
                                         QString xmlReleaseNotesLink,
+                                        QString xmlReleaseNotesHtml,
                                         QString xmlPubDate,
                                         QString xmlEnclosureUrl,
                                         QString xmlEnclosureVersion,

@@ -247,7 +247,7 @@ void FvUpdater::UpdateInstallationConfirmed()
 
     // Open a link
     if (! QDesktopServices::openUrl(proposedUpdate->GetEnclosureUrl())) {
-        showErrorDialog(tr("Unable to open this link in a browser. Please do it manually."), true);
+        showErrorDialog(tr("Unable to open this link in a browser. Please do it manually."), CRITICAL_MESSAGE);
         return;
     }
 
@@ -514,7 +514,7 @@ bool FvUpdater::xmlParseFeed()
 
         if (m_xml.error() && m_xml.error() != QXmlStreamReader::PrematureEndOfDocumentError) {
 
-            showErrorDialog(tr("Feed parsing failed: %1 %2.").arg(QString::number(m_xml.lineNumber()), m_xml.errorString()), false);
+            showErrorDialog(tr("Feed parsing failed: %1 %2.").arg(QString::number(m_xml.lineNumber()), m_xml.errorString()), NO_UPDATE_MESSAGE);
             return false;
 
         }
@@ -613,7 +613,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
 }
 
 
-void FvUpdater::showErrorDialog(QString message, bool showEvenInSilentMode)
+void FvUpdater::showErrorDialog(QString message, msgType type)
 {
     if (m_silentAsMuchAsItCouldGet) {
         if (type != CRITICAL_MESSAGE) {
@@ -621,18 +621,20 @@ void FvUpdater::showErrorDialog(QString message, bool showEvenInSilentMode)
             return;
         }
     }
-    else {
-        if(type == NO_UPDATE_MESSAGE) {
-            qDebug() << " Error " << message;
-            message = "No updates were found.";
-        }
-
-        QMessageBox dlFailedMsgBox;
-        dlFailedMsgBox.setIcon(QMessageBox::Critical);
-        dlFailedMsgBox.setText(tr("Error"));
-        dlFailedMsgBox.setInformativeText(message);
-        dlFailedMsgBox.exec();
+    else
+  {
+    if(type == NO_UPDATE_MESSAGE)
+    {
+      qDebug() << " Error " << message;
+      message = "No updates were found.";
     }
+  }
+
+    QMessageBox dlFailedMsgBox;
+    dlFailedMsgBox.setIcon(QMessageBox::Critical);
+    dlFailedMsgBox.setWindowTitle(tr("Error"));
+    dlFailedMsgBox.setText(message);
+    dlFailedMsgBox.exec();
 }
 
 void FvUpdater::showInformationDialog(QString message, bool showEvenInSilentMode)
