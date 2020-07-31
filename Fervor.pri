@@ -2,10 +2,10 @@ QT += core gui webenginewidgets network
 
 isEmpty(FV_APP_NAME) {
     warning("Fervor: falling back to application name '$$TARGET'")
-    DEFINES += FV_APP_NAME=\\\"$$TARGET\\\"
+    DEFINES += $$quote(FV_APP_NAME=\\\"$$TARGET\\\")
 } else {
     message("Fervor: building for application name '$$FV_APP_NAME'")
-    DEFINES += FV_APP_NAME=\\\"$$FV_APP_NAME\\\"
+    DEFINES += $$quote(FV_APP_NAME=\"\\\"$$FV_APP_NAME\\\"\")
 }
 
 isEmpty(FV_APP_VERSION) {
