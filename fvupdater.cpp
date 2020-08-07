@@ -370,7 +370,7 @@ void FvUpdater::httpFeedDownloadFinished()
 
         qDebug() << " error value " << m_reply->error();
         // Error.
-//    showErrorDialog(tr("Feed download failed: %1.").arg(m_reply->errorString()), false);
+        // showErrorDialog(tr("Feed download failed: %1.").arg(m_reply->errorString()), false);
         showErrorDialog(tr("Updates are unable to detect: %1.").arg(m_reply->errorString()), CRITICAL_MESSAGE);
         emit updatesDownloaded(false);
 
@@ -621,14 +621,12 @@ void FvUpdater::showErrorDialog(QString message, msgType type)
             return;
         }
     }
-    else
-  {
-    if(type == NO_UPDATE_MESSAGE)
-    {
-      qDebug() << " Error " << message;
-      message = "No updates were found.";
+    else {
+        if(type == NO_UPDATE_MESSAGE) {
+            qDebug() << " Error " << message;
+            message = "No updates were found.";
+        }
     }
-  }
 
     QMessageBox dlFailedMsgBox;
     dlFailedMsgBox.setIcon(QMessageBox::Critical);

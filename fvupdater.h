@@ -29,11 +29,11 @@ public:
     void SetFeedURL(QString feedURL);
     QString GetFeedURL();
 
-  // Set /get Dynamic download URL content
-  void SetDynamicUrlContent(QString dynamicUrl);
-  QString GetDynamicUrlContent();
+    // Set /get Dynamic download URL content
+    void SetDynamicUrlContent(QString dynamicUrl);
+    QString GetDynamicUrlContent();
 
-  void SetCheckBeforeUpdate(check_before_update_callback callback, void* context);
+    void SetCheckBeforeUpdate(check_before_update_callback callback, void* context);
 
 public slots:
 

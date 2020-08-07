@@ -35,19 +35,16 @@ bool FvAvailableUpdate::ContainsReleaseNotesHtml()
 {
   return !m_releaseNotesHtml.isEmpty();
 }
-// ~ bool FvAvailableUpdate::ContainsReleaseNotesHtml()
 
 QString FvAvailableUpdate::GetReleaseNotesHtml()
 {
   return m_releaseNotesHtml;
 }
-// ~ QString FvAvailableUpdate::GetReleaseNotesHtml()
 
 void FvAvailableUpdate::SetReleaseNotesHtml(QString releaseNotesHtml)
 {
   m_releaseNotesHtml = releaseNotesHtml;
 }
-// ~ void FvAvailableUpdate::SetReleaseNotesHtml(QString releaseNotesHtml)
 
 QString FvAvailableUpdate::GetPubDate()
 {
