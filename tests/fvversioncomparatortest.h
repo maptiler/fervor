@@ -6,12 +6,12 @@
 
 class FvVersionComparatorTest : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 private slots:
-	void testNumbers();
-	void testPrereleases();
-	void testVersionsWithBuildNumbers();
+    void testNumbers();
+    void testPrereleases();
+    void testVersionsWithBuildNumbers();
 
 };
 

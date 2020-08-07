@@ -8,54 +8,58 @@
 
 
 FvUpdateWindow::FvUpdateWindow(QWidget *parent) :
-	QWidget(parent),
-	m_ui(new Ui::FvUpdateWindow)
+    QWidget(parent),
+    m_ui(new Ui::FvUpdateWindow)
 {
-	m_ui->setupUi(this);
+    m_ui->setupUi(this);
 
-	m_appIconScene = 0;
+    m_appIconScene = 0;
 
-	// Delete on close
-	setAttribute(Qt::WA_DeleteOnClose, true);
+    // Delete on close
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
-	// Set the "new version is available" string
-	QString newVersString = m_ui->newVersionIsAvailableLabel->text().arg(QString::fromUtf8(FV_APP_NAME));
-	m_ui->newVersionIsAvailableLabel->setText(newVersString);
+    // Set the "new version is available" string
+    QString newVersString = m_ui->newVersionIsAvailableLabel->text().arg(QString::fromUtf8(FV_APP_NAME));
+    m_ui->newVersionIsAvailableLabel->setText(newVersString);
 
-	// Connect buttons
-	connect(m_ui->installUpdateButton, SIGNAL(clicked()),
-			FvUpdater::sharedUpdater(), SLOT(InstallUpdate()));
-	connect(m_ui->skipThisVersionButton, SIGNAL(clicked()),
-			FvUpdater::sharedUpdater(), SLOT(SkipUpdate()));
-	connect(m_ui->remindMeLaterButton, SIGNAL(clicked()),
-			FvUpdater::sharedUpdater(), SLOT(RemindMeLater()));
+    // Connect buttons
+    connect(m_ui->installUpdateButton, SIGNAL(clicked()),
+            FvUpdater::sharedUpdater(), SLOT(InstallUpdate()));
+    connect(m_ui->skipThisVersionButton, SIGNAL(clicked()),
+            FvUpdater::sharedUpdater(), SLOT(SkipUpdate()));
+    connect(m_ui->remindMeLaterButton, SIGNAL(clicked()),
+            FvUpdater::sharedUpdater(), SLOT(RemindMeLater()));
 }
 
 FvUpdateWindow::~FvUpdateWindow()
 {
-	m_ui->releaseNotesWebView->stop();
-	delete m_ui;
+    m_ui->releaseNotesWebView->stop();
+    delete m_ui;
 }
 
 bool FvUpdateWindow::UpdateWindowWithCurrentProposedUpdate()
 {
-	FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
-	if (! proposedUpdate) {
-		return false;
-	}
+    FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
+    if (! proposedUpdate) {
+        return false;
+    }
 
-	QString downloadString = m_ui->wouldYouLikeToDownloadLabel->text()
-			.arg(QString::fromUtf8(FV_APP_NAME), proposedUpdate->GetEnclosureVersion(), QString::fromUtf8(FV_APP_VERSION));
-	m_ui->wouldYouLikeToDownloadLabel->setText(downloadString);
+    QString downloadString = m_ui->wouldYouLikeToDownloadLabel->text()
+            .arg(QString::fromUtf8(FV_APP_NAME), proposedUpdate->GetEnclosureVersion(), QString::fromUtf8(FV_APP_VERSION));
+    m_ui->wouldYouLikeToDownloadLabel->setText(downloadString);
 
-	m_ui->releaseNotesWebView->stop();
-	m_ui->releaseNotesWebView->load(proposedUpdate->GetReleaseNotesLink());
+    m_ui->releaseNotesWebView->stop();
 
-	return true;
+  if(proposedUpdate->ContainsReleaseNotesHtml())
+    m_ui->releaseNotesWebView->setHtml(proposedUpdate->GetReleaseNotesHtml());
+  else
+    m_ui->releaseNotesWebView->load(proposedUpdate->GetReleaseNotesLink());
+
+    return true;
 }
 
 void FvUpdateWindow::closeEvent(QCloseEvent* event)
 {
-	FvUpdater::sharedUpdater()->updaterWindowWasClosed();
-	event->accept();
+    FvUpdater::sharedUpdater()->updaterWindowWasClosed();
+    event->accept();
 }

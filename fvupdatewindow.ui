@@ -53,7 +53,7 @@
           <property name="minimumSize">
            <size>
             <width>160</width>
-            <height>80</height>
+            <height>380</height>
            </size>
           </property>
           <property name="url">

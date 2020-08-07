@@ -9,19 +9,19 @@ class FvUpdateConfirmDialog;
 
 class FvUpdateConfirmDialog : public QDialog
 {
-	Q_OBJECT
-	
+    Q_OBJECT
+
 public:
-	explicit FvUpdateConfirmDialog(QWidget *parent = 0);
-	~FvUpdateConfirmDialog();
+    explicit FvUpdateConfirmDialog(QWidget *parent = 0);
+    ~FvUpdateConfirmDialog();
 
-	// Update the current update proposal from FvUpdater
-	bool UpdateWindowWithCurrentProposedUpdate();
+    // Update the current update proposal from FvUpdater
+    bool UpdateWindowWithCurrentProposedUpdate();
 
-	void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event);
 
 private:
-	Ui::FvUpdateConfirmDialog* m_ui;
+    Ui::FvUpdateConfirmDialog* m_ui;
 };
 
 #endif // FVUPDATECONFIRMDIALOG_H
