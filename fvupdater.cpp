@@ -174,12 +174,12 @@ QString FvUpdater::GetFeedURL()
 // Set /get Dynamic download URL content
 void FvUpdater::SetDynamicUrlContent(QString dynamicUrl)
 {
-  m_dynamicUrl = dynamicUrl;
+    m_dynamicUrl = dynamicUrl;
 }
 
 QString FvUpdater::GetDynamicUrlContent()
 {
-  return m_dynamicUrl;
+    return m_dynamicUrl;
 }
 
 void FvUpdater::SetCheckBeforeUpdate(check_before_update_callback callback, void* context)
@@ -575,7 +575,9 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
     xmlEnclosureUrl = QUrl::fromPercentEncoding(xmlEnclosureUrl.toLatin1());
     qDebug() << " decoded URL:" << xmlEnclosureUrl;
     // Append dynamic url content - if supported in EnclosureUrl
-    if(xmlEnclosureUrl.contains('%')) xmlEnclosureUrl = xmlEnclosureUrl.arg(m_dynamicUrl);
+    if (xmlEnclosureUrl.contains('%')) {
+        xmlEnclosureUrl = xmlEnclosureUrl.arg(m_dynamicUrl);
+    }
     qDebug() << "Download URL:" << xmlEnclosureUrl;
 
     // Relevant version?
