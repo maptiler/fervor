@@ -58,6 +58,7 @@ FvUpdater::FvUpdater() : QObject(0)
     m_updaterWindow = 0;
     m_updateConfirmationDialog = 0;
     m_proposedUpdate = 0;
+    m_mode = NORMAL;
 
     check_callback = 0;
     check_context = 0;
@@ -96,13 +97,26 @@ void FvUpdater::installTranslator()
 
 void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
 {
-    // Destroy window if already exists
-    hideUpdaterWindow();
+    qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()";
 
-    // Create a new window
-    m_updaterWindow = new FvUpdateWindow();
-    m_updaterWindow->UpdateWindowWithCurrentProposedUpdate();
-    m_updaterWindow->show();
+    if(m_mode == NORMAL) {
+        // Destroy window if already exists
+        hideUpdaterWindow();
+
+        // Create a new window
+        m_updaterWindow = new FvUpdateWindow();
+        m_updaterWindow->UpdateWindowWithCurrentProposedUpdate();
+        m_updaterWindow->show();
+    } else {
+        //Get the proposed update and emit the signal
+        FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
+        if (! proposedUpdate) {
+            qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
+            return;
+        }
+
+        emit proposedUpdateChanged(proposedUpdate);
+    }
 }
 
 void FvUpdater::hideUpdaterWindow()
@@ -127,13 +141,28 @@ void FvUpdater::updaterWindowWasClosed()
 
 void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
 {
-    // Destroy dialog if already exists
-    hideUpdateConfirmationDialog();
+    if(m_mode == NORMAL) {
+        // Destroy dialog if already exists
+        hideUpdateConfirmationDialog();
 
-    // Create a new window
-    m_updateConfirmationDialog = new FvUpdateConfirmDialog();
-    m_updateConfirmationDialog->UpdateWindowWithCurrentProposedUpdate();
-    m_updateConfirmationDialog->show();
+        // Create a new window
+        m_updateConfirmationDialog = new FvUpdateConfirmDialog();
+        m_updateConfirmationDialog->UpdateWindowWithCurrentProposedUpdate();
+        m_updateConfirmationDialog->show();
+    } else {
+        //Get the proposed update and emit the signal
+        FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
+        if (! proposedUpdate) {
+            qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
+            return;
+        }
+
+        emit proposedUpdateChanged(proposedUpdate);
+        // QString downloadLinkString = m_ui->updateFileLinkLabel->text()
+        //         .arg(proposedUpdate->GetEnclosureUrl().toString());
+        // m_ui->updateFileLinkLabel->setText(downloadLinkString);
+
+    }
 }
 
 void FvUpdater::hideUpdateConfirmationDialog()
@@ -186,6 +215,10 @@ void FvUpdater::SetCheckBeforeUpdate(check_before_update_callback callback, void
 {
     check_callback = callback;
     check_context = context;
+}
+
+void FvUpdater::SetFervorMode(FERVOR_MODE mode) {
+    m_mode = mode;
 }
 
 FvAvailableUpdate* FvUpdater::GetProposedUpdate()
