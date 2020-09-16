@@ -48,10 +48,16 @@ public slots:
     bool CheckForUpdatesSilent();
     bool CheckForUpdatesNotSilent();
 
+    // Update window button slots
+    void InstallUpdate();
+    void SkipUpdate();
+    void RemindMeLater();
+
 signals:
     // This signal will inform, whether network is accessible or not
     void updatesDownloaded(bool success);
     void proposedUpdateChanged(FvAvailableUpdate* proposedUpdate);
+    void updateDownloadLinkReady(QString link);
 
 
     //
@@ -75,11 +81,6 @@ protected:
 
 
 protected slots:
-
-    // Update window button slots
-    void InstallUpdate();
-    void SkipUpdate();
-    void RemindMeLater();
 
     // Update confirmation dialog button slots
     void UpdateInstallationConfirmed();

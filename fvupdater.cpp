@@ -153,15 +153,11 @@ void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
         //Get the proposed update and emit the signal
         FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
         if (! proposedUpdate) {
-            qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
+            qDebug() << "FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
             return;
         }
 
-        emit proposedUpdateChanged(proposedUpdate);
-        // QString downloadLinkString = m_ui->updateFileLinkLabel->text()
-        //         .arg(proposedUpdate->GetEnclosureUrl().toString());
-        // m_ui->updateFileLinkLabel->setText(downloadLinkString);
-
+        emit updateDownloadLinkReady(proposedUpdate->GetEnclosureUrl().toString());
     }
 }
 
@@ -226,7 +222,6 @@ FvAvailableUpdate* FvUpdater::GetProposedUpdate()
     return m_proposedUpdate;
 }
 
-
 void FvUpdater::InstallUpdate()
 {
     qDebug() << "Install update";
@@ -234,8 +229,10 @@ void FvUpdater::InstallUpdate()
     // Check callback function
     if (check_callback) {
         if (!check_callback(check_context, (void*)m_updaterWindow)) {
-            hideUpdaterWindow();
-            hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
+            if(m_mode == NORMAL) {
+                hideUpdaterWindow();
+                hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
+            }
             return;
         }
     }
@@ -255,17 +252,19 @@ void FvUpdater::SkipUpdate()
 
     // Start ignoring this particular version
     FVIgnoredVersions::IgnoreVersion(proposedUpdate->GetEnclosureVersion());
-
-    hideUpdaterWindow();
-    hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+    if(m_mode == NORMAL) {
+        hideUpdaterWindow();
+        hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+    }
 }
 
 void FvUpdater::RemindMeLater()
 {
     qDebug() << "Remind me later";
-
-    hideUpdaterWindow();
-    hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+    if(m_mode == NORMAL) {
+        hideUpdaterWindow();
+        hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+    }
 }
 
 void FvUpdater::UpdateInstallationConfirmed()
