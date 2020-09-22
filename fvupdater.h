@@ -56,7 +56,6 @@ public slots:
 signals:
     // This signal will inform, whether network is accessible or not
     void updatesDownloaded(bool success);
-    // void proposedUpdateChanged(FvAvailableUpdate* proposedUpdate);
     void proposedVersionChanged(QString version);
     void proposedReleaseNotesChanged(QString content);
     void proposedReleaseNotesLinkChanged(QUrl link);
