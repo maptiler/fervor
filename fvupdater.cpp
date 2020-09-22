@@ -30,10 +30,10 @@ FvUpdater* FvUpdater::m_Instance = 0;
 FvUpdater* FvUpdater::sharedUpdater()
 {
     static QMutex mutex;
-    if (! m_Instance) {
+    if (!m_Instance) {
         mutex.lock();
 
-        if (! m_Instance) {
+        if (!m_Instance) {
             m_Instance = new FvUpdater;
         }
 
@@ -99,7 +99,7 @@ void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
 {
     qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()";
 
-    if(m_mode == NORMAL) {
+    if (m_mode == NORMAL) {
         // Destroy window if already exists
         hideUpdaterWindow();
 
@@ -108,21 +108,24 @@ void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
         m_updaterWindow->UpdateWindowWithCurrentProposedUpdate();
         m_updaterWindow->show();
     } else {
-        //Get the proposed update and emit the signal
+        // Get the proposed update and emit the signal
         FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
-        if (! proposedUpdate) {
+        if (proposedUpdate == nullptr) {
             qDebug() << "FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
             return;
         }
 
-        emit proposedUpdateChanged(proposedUpdate);
+        // emit proposedUpdateChanged(proposedUpdate);
+        emit proposedVersionChanged(proposedUpdate->GetEnclosureVersion());
+        emit proposedReleaseNotesChanged(proposedUpdate->GetReleaseNotesHtml());
+        emit proposedReleaseNotesLinkChanged(proposedUpdate->GetReleaseNotesLink());
     }
 }
 
 void FvUpdater::hideUpdaterWindow()
 {
     if (m_updaterWindow) {
-        if (! m_updaterWindow->close()) {
+        if (!m_updaterWindow->close()) {
             qWarning() << "Update window didn't close, leaking memory from now on";
         }
 
@@ -141,7 +144,7 @@ void FvUpdater::updaterWindowWasClosed()
 
 void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
 {
-    if(m_mode == NORMAL) {
+    if (m_mode == NORMAL) {
         // Destroy dialog if already exists
         hideUpdateConfirmationDialog();
 
@@ -152,7 +155,7 @@ void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
     } else {
         //Get the proposed update and emit the signal
         FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
-        if (! proposedUpdate) {
+        if (proposedUpdate == nullptr) {
             qDebug() << "FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
             return;
         }
@@ -164,7 +167,7 @@ void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
 void FvUpdater::hideUpdateConfirmationDialog()
 {
     if (m_updateConfirmationDialog) {
-        if (! m_updateConfirmationDialog->close()) {
+        if (!m_updateConfirmationDialog->close()) {
             qWarning() << "Update confirmation dialog didn't close, leaking memory from now on";
         }
 
@@ -229,7 +232,7 @@ void FvUpdater::InstallUpdate()
     // Check callback function
     if (check_callback) {
         if (!check_callback(check_context, (void*)m_updaterWindow)) {
-            if(m_mode == NORMAL) {
+            if (m_mode == NORMAL) {
                 hideUpdaterWindow();
                 hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
             }
@@ -245,14 +248,14 @@ void FvUpdater::SkipUpdate()
     qDebug() << "Skip update";
 
     FvAvailableUpdate* proposedUpdate = GetProposedUpdate();
-    if (! proposedUpdate) {
+    if (proposedUpdate == nullptr) {
         qWarning() << "Proposed update is NULL (shouldn't be at this point)";
         return;
     }
 
     // Start ignoring this particular version
     FVIgnoredVersions::IgnoreVersion(proposedUpdate->GetEnclosureVersion());
-    if(m_mode == NORMAL) {
+    if (m_mode == NORMAL) {
         hideUpdaterWindow();
         hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
     }
@@ -261,7 +264,7 @@ void FvUpdater::SkipUpdate()
 void FvUpdater::RemindMeLater()
 {
     qDebug() << "Remind me later";
-    if(m_mode == NORMAL) {
+    if (m_mode == NORMAL) {
         hideUpdaterWindow();
         hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
     }
@@ -272,13 +275,13 @@ void FvUpdater::UpdateInstallationConfirmed()
     qDebug() << "Confirm update installation";
 
     FvAvailableUpdate* proposedUpdate = GetProposedUpdate();
-    if (! proposedUpdate) {
+    if (!proposedUpdate) {
         qWarning() << "Proposed update is NULL (shouldn't be at this point)";
         return;
     }
 
     // Open a link
-    if (! QDesktopServices::openUrl(proposedUpdate->GetEnclosureUrl())) {
+    if (!QDesktopServices::openUrl(proposedUpdate->GetEnclosureUrl())) {
         showErrorDialog(tr("Unable to open this link in a browser. Please do it manually."), CRITICAL_MESSAGE);
         return;
     }
@@ -406,7 +409,7 @@ void FvUpdater::httpFeedDownloadFinished()
         showErrorDialog(tr("Updates are unable to detect: %1.").arg(m_reply->errorString()), CRITICAL_MESSAGE);
         emit updatesDownloaded(false);
 
-    } else if (! redirectionTarget.isNull()) {
+    } else if (!redirectionTarget.isNull()) {
         QUrl newUrl = m_feedURL.resolved(redirectionTarget.toUrl());
 
         m_feedURL = newUrl;
@@ -436,7 +439,7 @@ bool FvUpdater::xmlParseFeed()
     unsigned long xmlEnclosureLength = 0;
 
     // Parse
-    while (! m_xml.atEnd()) {
+    while (!m_xml.atEnd()) {
 
         m_xml.readNext();
 
@@ -477,13 +480,13 @@ bool FvUpdater::xmlParseFeed()
                         // First check for Sparkle's version, then overwrite with Fervor's version (if any)
                         if (attribs.hasAttribute("sparkle:version")) {
                             QString candidateVersion = attribs.value("sparkle:version").toString().trimmed();
-                            if (! candidateVersion.isEmpty()) {
+                            if (!candidateVersion.isEmpty()) {
                                 xmlEnclosureVersion = candidateVersion;
                             }
                         }
                         if (attribs.hasAttribute("fervor:version")) {
                             QString candidateVersion = attribs.value("fervor:version").toString().trimmed();
-                            if (! candidateVersion.isEmpty()) {
+                            if (!candidateVersion.isEmpty()) {
                                 xmlEnclosureVersion = candidateVersion;
                             }
                         }
@@ -524,7 +527,7 @@ bool FvUpdater::xmlParseFeed()
                                                       xmlEnclosureType);
             }
 
-        } else if (m_xml.isCharacters() && ! m_xml.isWhitespace()) {
+        } else if (m_xml.isCharacters() && !m_xml.isWhitespace()) {
 
             if (currentTag == "title") {
                 xmlTitle += m_xml.text().toString().trimmed();
@@ -593,7 +596,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
         } else {
             xmlLink = xmlReleaseNotesLink;
         }
-        if (! (xmlLink.startsWith("http://") || xmlLink.startsWith("https://"))) {
+        if (!(xmlLink.startsWith("http://") || xmlLink.startsWith("https://"))) {
             showErrorDialog(tr("Feed error: invalid \"release notes\" link"), NO_UPDATE_MESSAGE);
             return false;
         }
@@ -672,7 +675,7 @@ void FvUpdater::showErrorDialog(QString message, msgType type)
 void FvUpdater::showInformationDialog(QString message, bool showEvenInSilentMode)
 {
     if (m_silentAsMuchAsItCouldGet) {
-        if (! showEvenInSilentMode) {
+        if (!showEvenInSilentMode) {
             // Don't show information dialogs in the silent mode
             return;
         }
