@@ -13,6 +13,10 @@ class FvAvailableUpdate;
 
 typedef int (*check_before_update_callback)(void *, void *);
 
+enum FERVOR_MODE {
+    QUIET,
+    NORMAL
+};
 
 class FvUpdater : public QObject
 {
@@ -23,7 +27,6 @@ public:
     // Singleton
     static FvUpdater* sharedUpdater();
     static void drop();
-
     // Set / get feed URL
     void SetFeedURL(QUrl feedURL);
     void SetFeedURL(QString feedURL);
@@ -34,6 +37,7 @@ public:
     QString GetDynamicUrlContent();
 
     void SetCheckBeforeUpdate(check_before_update_callback callback, void* context);
+    void SetFervorMode(FERVOR_MODE mode);
 
 public slots:
 
@@ -44,9 +48,18 @@ public slots:
     bool CheckForUpdatesSilent();
     bool CheckForUpdatesNotSilent();
 
+    // Update window button slots
+    void InstallUpdate();
+    void SkipUpdate();
+    void RemindMeLater();
+
 signals:
     // This signal will inform, whether network is accessible or not
     void updatesDownloaded(bool success);
+    void proposedVersionChanged(QString version);
+    void proposedReleaseNotesChanged(QString content);
+    void proposedReleaseNotesLinkChanged(QUrl link);
+    void updateDownloadLinkReady(QString link);
 
 
     //
@@ -71,11 +84,6 @@ protected:
 
 protected slots:
 
-    // Update window button slots
-    void InstallUpdate();
-    void SkipUpdate();
-    void RemindMeLater();
-
     // Update confirmation dialog button slots
     void UpdateInstallationConfirmed();
     void UpdateInstallationNotConfirmed();
@@ -94,6 +102,10 @@ private:
 
     static FvUpdater* m_Instance;           // Singleton instance
 
+    //Mode of Fervor operation
+    //QUIET - use signals to communicate with the application
+    //NORMAL - use default QWidget windows
+    FERVOR_MODE m_mode;
 
     //
     // Windows / dialogs
