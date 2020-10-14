@@ -78,7 +78,7 @@ protected:
     };
 
     friend class FvUpdateWindow;        // Uses GetProposedUpdate() and others
-    friend class FvUpdateConfirmDialog; // Uses GetProposedUpdate() and others
+    // friend class FvUpdateConfirmDialog; // Uses GetProposedUpdate() and others
     FvAvailableUpdate* GetProposedUpdate();
 
 
@@ -115,10 +115,10 @@ private:
     void hideUpdaterWindow();                                       // Hide + destroy m_updaterWindow
     void updaterWindowWasClosed();                                  // Sent by the updater window when it gets closed
 
-    FvUpdateConfirmDialog* m_updateConfirmationDialog;                      // Update confirmation dialog (NULL if not shown)
-    void showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();    // Show update confirmation dialog
-    void hideUpdateConfirmationDialog();                                    // Hide + destroy m_updateConfirmationDialog
-    void updateConfirmationDialogWasClosed();                               // Sent by the update confirmation dialog when it gets closed
+    // FvUpdateConfirmDialog* m_updateConfirmationDialog;                      // Update confirmation dialog (NULL if not shown)
+    // void showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();    // Show update confirmation dialog
+    // void hideUpdateConfirmationDialog();                                    // Hide + destroy m_updateConfirmationDialog
+    // void updateConfirmationDialogWasClosed();                               // Sent by the update confirmation dialog when it gets closed
 
     // Available update (NULL if not fetched)
     FvAvailableUpdate* m_proposedUpdate;

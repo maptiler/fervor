@@ -1,6 +1,5 @@
 #include "fvupdater.h"
 #include "fvupdatewindow.h"
-#include "fvupdateconfirmdialog.h"
 #include "fvplatform.h"
 #include "fvignoredversions.h"
 #include "fvavailableupdate.h"
@@ -9,12 +8,12 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QDebug>
+#include <QSettings>
+#include "quazip.h"
+#include "quazipfile.h"
 
-#ifndef FV_APP_NAME
-#    error "FV_APP_NAME is undefined (must have been defined by Fervor.pri)"
-#endif
-#ifndef FV_APP_VERSION
-#    error "FV_APP_VERSION is undefined (must have been defined by Fervor.pri)"
+#ifdef Q_WS_MAC
+#include "CoreFoundation/CoreFoundation.h"
 #endif
 
 
@@ -23,6 +22,7 @@
 #    include "fvversioncomparatortest.h"
 #endif
 
+extern QSettings* settings;
 
 FvUpdater* FvUpdater::m_Instance = 0;
 
@@ -56,7 +56,6 @@ FvUpdater::FvUpdater() : QObject(0)
 {
     m_reply = 0;
     m_updaterWindow = 0;
-    m_updateConfirmationDialog = 0;
     m_proposedUpdate = 0;
     m_mode = NORMAL;
 
@@ -82,7 +81,6 @@ FvUpdater::~FvUpdater()
         m_proposedUpdate = 0;
     }
 
-    hideUpdateConfirmationDialog();
     hideUpdaterWindow();
 }
 
@@ -91,7 +89,11 @@ void FvUpdater::installTranslator()
     QTranslator translator;
     QString locale = QLocale::system().name();
     translator.load(QString("fervor_") + locale);
-    //QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
+
+#if QT_VERSION < 0x050000
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
+#endif
+
     qApp->installTranslator(&translator);
 }
 
@@ -142,46 +144,46 @@ void FvUpdater::updaterWindowWasClosed()
 }
 
 
-void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
-{
-    if (m_mode == NORMAL) {
-        // Destroy dialog if already exists
-        hideUpdateConfirmationDialog();
+// void FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal()
+// {
+//     if (m_mode == NORMAL) {
+//         // Destroy dialog if already exists
+//         hideUpdateConfirmationDialog();
 
-        // Create a new window
-        m_updateConfirmationDialog = new FvUpdateConfirmDialog();
-        m_updateConfirmationDialog->UpdateWindowWithCurrentProposedUpdate();
-        m_updateConfirmationDialog->show();
-    } else {
-        //Get the proposed update and emit the signal
-        FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
-        if (proposedUpdate == nullptr) {
-            qDebug() << "FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
-            return;
-        }
+//         // Create a new window
+//         m_updateConfirmationDialog = new FvUpdateConfirmDialog();
+//         m_updateConfirmationDialog->UpdateWindowWithCurrentProposedUpdate();
+//         m_updateConfirmationDialog->show();
+//     } else {
+//         //Get the proposed update and emit the signal
+//         FvAvailableUpdate* proposedUpdate = FvUpdater::sharedUpdater()->GetProposedUpdate();
+//         if (proposedUpdate == nullptr) {
+//             qDebug() << "FvUpdater::showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal(): proposedUpdate is empty!";
+//             return;
+//         }
 
-        emit updateDownloadLinkReady(proposedUpdate->GetEnclosureUrl().toString());
-    }
-}
+//         emit updateDownloadLinkReady(proposedUpdate->GetEnclosureUrl().toString());
+//     }
+// }
 
-void FvUpdater::hideUpdateConfirmationDialog()
-{
-    if (m_updateConfirmationDialog) {
-        if (!m_updateConfirmationDialog->close()) {
-            qWarning() << "Update confirmation dialog didn't close, leaking memory from now on";
-        }
+// void FvUpdater::hideUpdateConfirmationDialog()
+// {
+//     if (m_updateConfirmationDialog) {
+//         if (!m_updateConfirmationDialog->close()) {
+//             qWarning() << "Update confirmation dialog didn't close, leaking memory from now on";
+//         }
 
-        // not deleting because of Qt::WA_DeleteOnClose
+//         // not deleting because of Qt::WA_DeleteOnClose
 
-        m_updateConfirmationDialog = 0;
-    }
-}
+//         m_updateConfirmationDialog = 0;
+//     }
+// }
 
-void FvUpdater::updateConfirmationDialogWasClosed()
-{
-    // (Re-)nullify a pointer to a destroyed QWidget or you're going to have a bad time.
-    m_updateConfirmationDialog = 0;
-}
+// void FvUpdater::updateConfirmationDialogWasClosed()
+// {
+//     // (Re-)nullify a pointer to a destroyed QWidget or you're going to have a bad time.
+//     m_updateConfirmationDialog = 0;
+// }
 
 
 void FvUpdater::SetFeedURL(QUrl feedURL)
@@ -234,13 +236,13 @@ void FvUpdater::InstallUpdate()
         if (!check_callback(check_context, (void*)m_updaterWindow)) {
             if (m_mode == NORMAL) {
                 hideUpdaterWindow();
-                hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
+                // hideUpdateConfirmationDialog(); // if any; shouldn't be shown at this point, but who knows
             }
             return;
         }
     }
 
-    showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
+    // showUpdateConfirmationDialogUpdatedWithCurrentUpdateProposal();
 }
 
 void FvUpdater::SkipUpdate()
@@ -257,7 +259,7 @@ void FvUpdater::SkipUpdate()
     FVIgnoredVersions::IgnoreVersion(proposedUpdate->GetEnclosureVersion());
     if (m_mode == NORMAL) {
         hideUpdaterWindow();
-        hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+        // hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
     }
 }
 
@@ -266,7 +268,7 @@ void FvUpdater::RemindMeLater()
     qDebug() << "Remind me later";
     if (m_mode == NORMAL) {
         hideUpdaterWindow();
-        hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+        // hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
     }
 }
 
@@ -287,14 +289,14 @@ void FvUpdater::UpdateInstallationConfirmed()
     }
 
     hideUpdaterWindow();
-    hideUpdateConfirmationDialog();
+    // hideUpdateConfirmationDialog();
 }
 
 void FvUpdater::UpdateInstallationNotConfirmed()
 {
     qDebug() << "Do not confirm update installation";
 
-    hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
+    // hideUpdateConfirmationDialog();    // if any; shouldn't be shown at this point, but who knows
     // leave the "update proposal window" inact
 }
 
