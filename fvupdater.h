@@ -60,6 +60,7 @@ signals:
     void proposedReleaseNotesChanged(QString content);
     void proposedReleaseNotesLinkChanged(QUrl link);
     void updateDownloadLinkReady(QString link);
+    void updateAvailable();
     void errorMessage(QString message);
     void informationMessage(QString message);
 

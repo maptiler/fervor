@@ -119,6 +119,7 @@ void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
         emit proposedVersionChanged(proposedUpdate->GetEnclosureVersion());
         emit proposedReleaseNotesChanged(proposedUpdate->GetReleaseNotesHtml());
         emit proposedReleaseNotesLinkChanged(proposedUpdate->GetReleaseNotesLink());
+        emit updateAvailable();
     }
 }
 
