@@ -664,12 +664,15 @@ void FvUpdater::showErrorDialog(QString message, msgType type)
             message = "No updates were found.";
         }
     }
-
-    QMessageBox dlFailedMsgBox;
-    dlFailedMsgBox.setIcon(QMessageBox::Critical);
-    dlFailedMsgBox.setWindowTitle(tr("Error"));
-    dlFailedMsgBox.setText(message);
-    dlFailedMsgBox.exec();
+    if (m_mode == NORMAL) {
+        QMessageBox dlFailedMsgBox;
+        dlFailedMsgBox.setIcon(QMessageBox::Critical);
+        dlFailedMsgBox.setWindowTitle(tr("Error"));
+        dlFailedMsgBox.setText(message);
+        dlFailedMsgBox.exec();
+    } else {
+        emit errorMessage(message);
+    }
 }
 
 void FvUpdater::showInformationDialog(QString message, bool showEvenInSilentMode)
@@ -680,10 +683,13 @@ void FvUpdater::showInformationDialog(QString message, bool showEvenInSilentMode
             return;
         }
     }
-
-    QMessageBox dlInformationMsgBox;
-    dlInformationMsgBox.setIcon(QMessageBox::Information);
-    dlInformationMsgBox.setText(tr("Information"));
-    dlInformationMsgBox.setInformativeText(message);
-    dlInformationMsgBox.exec();
+    if (m_mode == NORMAL) {
+        QMessageBox dlInformationMsgBox;
+        dlInformationMsgBox.setIcon(QMessageBox::Information);
+        dlInformationMsgBox.setText(tr("Information"));
+        dlInformationMsgBox.setInformativeText(message);
+        dlInformationMsgBox.exec();
+    } else {
+        emit informationMessage(message);
+    }
 }
