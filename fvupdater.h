@@ -64,7 +64,6 @@ signals:
     void errorMessage(QString message);
     void informationMessage(QString message);
 
-
     //
     // ---------------------------------------------------
     // ---------------------------------------------------
