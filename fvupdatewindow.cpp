@@ -50,10 +50,11 @@ bool FvUpdateWindow::UpdateWindowWithCurrentProposedUpdate()
 
     m_ui->releaseNotesWebView->stop();
 
-  if(proposedUpdate->ContainsReleaseNotesHtml())
-    m_ui->releaseNotesWebView->setHtml(proposedUpdate->GetReleaseNotesHtml());
-  else
-    m_ui->releaseNotesWebView->load(proposedUpdate->GetReleaseNotesLink());
+    if (proposedUpdate->ContainsReleaseNotesHtml()) {
+        m_ui->releaseNotesWebView->setHtml(proposedUpdate->GetReleaseNotesHtml());
+    } else {
+        m_ui->releaseNotesWebView->load(proposedUpdate->GetReleaseNotesLink());
+    }
 
     return true;
 }
