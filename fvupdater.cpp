@@ -448,7 +448,7 @@ bool FvUpdater::xmlParseFeed()
             currentTag = m_xml.name().toString();
             currentQualifiedTag = m_xml.qualifiedName().toString();
 
-            if (m_xml.name() == "item") {
+            if (m_xml.name() == QString("item")) {
 
                 xmlTitle.clear();
                 xmlLink.clear();
@@ -461,7 +461,7 @@ bool FvUpdater::xmlParseFeed()
                 xmlEnclosureLength = 0;
                 xmlEnclosureType.clear();
 
-            } else if (m_xml.name() == "enclosure") {
+            } else if (m_xml.name() == QString("enclosure")) {
 
                 QXmlStreamAttributes attribs = m_xml.attributes();
 
@@ -510,7 +510,7 @@ bool FvUpdater::xmlParseFeed()
 
         } else if (m_xml.isEndElement()) {
 
-            if (m_xml.name() == "item") {
+            if (m_xml.name() == QString("item")) {
 
                 // That's it - we have analyzed a single <item> and we'll stop
                 // here (because the topmost is the most recent one, and thus
