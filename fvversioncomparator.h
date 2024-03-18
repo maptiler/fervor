@@ -2,6 +2,7 @@
 #define FVVERSIONCOMPARATOR_H
 
 #include <iosfwd>
+#include <string>
 #include <vector>
 
 
