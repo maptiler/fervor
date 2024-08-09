@@ -584,7 +584,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
     qDebug() << "Link:" << xmlLink;
     qDebug() << "Release notes link:" << xmlReleaseNotesLink;
     qDebug() << "Pub. date:" << xmlPubDate;
-    qDebug() << "Pub. date:" << xmlPostponeLimit;
+    qDebug() << "Postpone limit:" << xmlPostponeLimit;
     qDebug() << "Enclosure URL:" << xmlEnclosureUrl;
     qDebug() << "Enclosure version:" << xmlEnclosureVersion;
     qDebug() << "Enclosure platform:" << xmlEnclosurePlatform;
