@@ -171,6 +171,7 @@ private:
                                         QString xmlReleaseNotesLink,
                                         QString xmlReleaseNotesHtml,
                                         QString xmlPubDate,
+                                        QString xmlPostponeLimit,
                                         QString xmlEnclosureUrl,
                                         QString xmlEnclosureVersion,
                                         QString xmlEnclosurePlatform,
