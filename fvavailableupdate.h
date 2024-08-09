@@ -24,6 +24,9 @@ public:
     QString GetPubDate();
     void SetPubDate(QString pubDate);
 
+    QString GetPostponeLimit();
+    void SetPostponeLimit(QString postponeLimit);
+
     QUrl GetEnclosureUrl();
     void SetEnclosureUrl(QUrl enclosureUrl);
     void SetEnclosureUrl(QString enclosureUrl);
@@ -45,6 +48,7 @@ private:
     QUrl m_releaseNotesLink;
     QString m_releaseNotesHtml;
     QString m_pubDate;
+    QString m_postponeLimit;
     QUrl m_enclosureUrl;
     QString m_enclosureVersion;
     QString m_enclosurePlatform;
