@@ -57,6 +57,7 @@ signals:
     // This signal will inform, whether network is accessible or not
     void updatesDownloaded(bool success);
     void proposedVersionChanged(QString version);
+    void postponeLimitChanged(QString postponeLimit);
     void proposedReleaseNotesChanged(QString content);
     void proposedReleaseNotesLinkChanged(QUrl link);
     void updateDownloadLinkReady(QString link);
