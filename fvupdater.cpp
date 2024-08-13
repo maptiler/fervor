@@ -618,9 +618,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
     // Relevant version?
     if (FVIgnoredVersions::VersionIsIgnored(xmlEnclosureVersion)) {
         qDebug() << "Version '" << xmlEnclosureVersion << "' is ignored, too old or something like that.";
-
         showInformationDialog(tr("No updates were found."), false);
-
         return true;    // Things have succeeded when you think of it.
     }
 

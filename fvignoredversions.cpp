@@ -25,6 +25,8 @@ bool FVIgnoredVersions::VersionIsIgnored(QString version)
     if (version == FV_APP_VERSION) {
         return true;
     }
+    // EN-832 Disable using ignored versions
+    return false;
 
 #ifdef Q_WS_MAC
     QSettings settings(QSettings::NativeFormat,
