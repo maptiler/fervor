@@ -56,6 +56,16 @@ void FvAvailableUpdate::SetPubDate(QString pubDate)
     m_pubDate = pubDate;
 }
 
+QString FvAvailableUpdate::GetPostponeLimit()
+{
+    return m_postponeLimit;
+}
+
+void FvAvailableUpdate::SetPostponeLimit(QString postponeLimit)
+{
+    m_postponeLimit = postponeLimit;
+}
+
 QUrl FvAvailableUpdate::GetEnclosureUrl()
 {
     return m_enclosureUrl;

@@ -116,6 +116,7 @@ void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
         }
 
         emit proposedVersionChanged(proposedUpdate->GetEnclosureVersion());
+        emit postponeLimitChanged(proposedUpdate->GetPostponeLimit());
         emit proposedReleaseNotesChanged(proposedUpdate->GetReleaseNotesHtml());
         emit proposedReleaseNotesLinkChanged(proposedUpdate->GetReleaseNotesLink());
         emit updateAvailable();
@@ -433,7 +434,7 @@ bool FvUpdater::xmlParseFeed()
 {
     QString currentTag, currentQualifiedTag;
 
-    QString xmlTitle, xmlLink, xmlReleaseNotesLink, xmlPubDate, xmlEnclosureUrl,
+    QString xmlTitle, xmlLink, xmlReleaseNotesLink, xmlPubDate, xmlPostponeLimit, xmlEnclosureUrl,
             xmlEnclosureVersion, xmlEnclosurePlatform, xmlEnclosureType,
             xmlReleaseNotesHtml;
     unsigned long xmlEnclosureLength = 0;
@@ -455,6 +456,7 @@ bool FvUpdater::xmlParseFeed()
                 xmlReleaseNotesLink.clear();
                 xmlReleaseNotesHtml.clear();
                 xmlPubDate.clear();
+                xmlPostponeLimit.clear();
                 xmlEnclosureUrl.clear();
                 xmlEnclosureVersion.clear();
                 xmlEnclosurePlatform.clear();
@@ -520,6 +522,7 @@ bool FvUpdater::xmlParseFeed()
                                                       xmlReleaseNotesLink,
                                                       xmlReleaseNotesHtml,
                                                       xmlPubDate,
+                                                      xmlPostponeLimit,
                                                       xmlEnclosureUrl,
                                                       xmlEnclosureVersion,
                                                       xmlEnclosurePlatform,
@@ -540,6 +543,9 @@ bool FvUpdater::xmlParseFeed()
 
             } else if (currentTag == "pubDate") {
                 xmlPubDate += m_xml.text().toString().trimmed();
+            
+            } else if (currentTag == "postponeLimit") {
+                xmlPostponeLimit += m_xml.text().toString().trimmed();
 
             } else if (currentTag == "description") {
                 xmlReleaseNotesHtml += m_xml.text().toString().trimmed();
@@ -568,6 +574,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
                                                QString xmlReleaseNotesLink,
                                                QString xmlReleaseNotesHtml,
                                                QString xmlPubDate,
+                                               QString xmlPostponeLimit,
                                                QString xmlEnclosureUrl,
                                                QString xmlEnclosureVersion,
                                                QString xmlEnclosurePlatform,
@@ -578,6 +585,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
     qDebug() << "Link:" << xmlLink;
     qDebug() << "Release notes link:" << xmlReleaseNotesLink;
     qDebug() << "Pub. date:" << xmlPubDate;
+    qDebug() << "Postpone limit:" << xmlPostponeLimit;
     qDebug() << "Enclosure URL:" << xmlEnclosureUrl;
     qDebug() << "Enclosure version:" << xmlEnclosureVersion;
     qDebug() << "Enclosure platform:" << xmlEnclosurePlatform;
@@ -635,6 +643,7 @@ bool FvUpdater::searchDownloadedFeedForUpdates(QString xmlTitle,
     m_proposedUpdate->SetReleaseNotesLink(xmlReleaseNotesLink);
     m_proposedUpdate->SetReleaseNotesHtml(xmlReleaseNotesHtml);
     m_proposedUpdate->SetPubDate(xmlPubDate);
+    m_proposedUpdate->SetPostponeLimit(xmlPostponeLimit);
     m_proposedUpdate->SetEnclosureUrl(xmlEnclosureUrl);
     m_proposedUpdate->SetEnclosureVersion(xmlEnclosureVersion);
     m_proposedUpdate->SetEnclosurePlatform(xmlEnclosurePlatform);
