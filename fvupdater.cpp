@@ -116,6 +116,7 @@ void FvUpdater::showUpdaterWindowUpdatedWithCurrentUpdateProposal()
         }
 
         emit proposedVersionChanged(proposedUpdate->GetEnclosureVersion());
+        emit proposedPubDateChanged(proposedUpdate->GetPubDate());
         emit postponeLimitChanged(proposedUpdate->GetPostponeLimit());
         emit proposedReleaseNotesChanged(proposedUpdate->GetReleaseNotesHtml());
         emit proposedReleaseNotesLinkChanged(proposedUpdate->GetReleaseNotesLink());
@@ -563,6 +564,7 @@ bool FvUpdater::xmlParseFeed()
 
     // No updates were found if we're at this point
     // (not a single <item> element found)
+    emit noUpdateFound();
     showInformationDialog(tr("No updates were found."), false);
 
     return false;
