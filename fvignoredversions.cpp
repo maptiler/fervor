@@ -22,7 +22,7 @@ bool FVIgnoredVersions::VersionIsIgnored(QString version)
     //    3) A newer version (don't ignore)
     // 'version' is not likely to contain an older version in any case.
 
-    if (version == FV_APP_VERSION) {
+    if (version <= FV_APP_VERSION) {
         return true;
     }
     // EN-832 Disable using ignored versions
